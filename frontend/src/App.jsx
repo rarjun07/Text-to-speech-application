@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { ApiError, generateSpeech, getApiBaseUrl, getHealth, getVoices } from './api/client';
 
 const MAX_CHARACTERS = 5000;
 
@@ -27,9 +28,14 @@ function App() {
   const [error, setError] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
   const [hasAttemptedGenerate, setHasAttemptedGenerate] = useState(false);
+  const [providerVoices, setProviderVoices] = useState(voices);
+  const [backendStatus, setBackendStatus] = useState('checking');
 
-  const availableVoices = useMemo(() => voicesForLanguage(language), [language]);
-  const selectedVoice = voices.find((item) => item.id === voice);
+  const availableVoices = useMemo(
+    () => providerVoices.filter((item) => item.language === language),
+    [language, providerVoices],
+  );
+  const selectedVoice = providerVoices.find((item) => item.id === voice);
 
   const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
   const characterCount = text.length;
@@ -40,6 +46,34 @@ function App() {
       ? `Text must be ${MAX_CHARACTERS.toLocaleString()} characters or fewer.`
       : '';
 
+  useEffect(() => {
+    let isCurrent = true;
+
+    async function loadBackendData() {
+      const [healthResult, voicesResult] = await Promise.allSettled([getHealth(), getVoices()]);
+      if (!isCurrent) return;
+
+      if (healthResult.status === 'fulfilled' && healthResult.value?.status === 'ok') {
+        setBackendStatus('online');
+      } else {
+        setBackendStatus('offline');
+      }
+
+      if (voicesResult.status === 'fulfilled') {
+        const payload = voicesResult.value;
+        const providerList = Array.isArray(payload) ? payload : payload?.voices;
+        if (Array.isArray(providerList) && providerList.length) {
+          setProviderVoices(providerList);
+          const firstCompatibleVoice = providerList.find((item) => item.language === language);
+          if (firstCompatibleVoice) setVoice(firstCompatibleVoice.id);
+        }
+      }
+    }
+
+    loadBackendData();
+    return () => { isCurrent = false; };
+  }, [language]);
+
   function handleLanguageChange(event) {
     const nextLanguage = event.target.value;
     const nextVoices = voicesForLanguage(nextLanguage);
@@ -48,7 +82,7 @@ function App() {
     setError('');
   }
 
-  function handleGenerate(event) {
+  async function handleGenerate(event) {
     event.preventDefault();
     setHasAttemptedGenerate(true);
     if (textError) {
@@ -62,7 +96,16 @@ function App() {
 
     setError('');
     setIsGenerating(true);
-    window.setTimeout(() => setIsGenerating(false), 650);
+    try {
+      const result = await generateSpeech({ text: text.trim(), language, voice });
+      if (!result?.audio_url) throw new ApiError('The backend returned no audio URL.');
+      setAudioUrl(result.audio_url.startsWith('http') ? result.audio_url : `${getApiBaseUrl()}${result.audio_url}`);
+    } catch (requestError) {
+      setAudioUrl('');
+      setError(requestError instanceof ApiError ? requestError.message : 'Speech generation failed.');
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   function handleClear() {
@@ -80,7 +123,7 @@ function App() {
           <p className="eyebrow">Audio workspace</p>
           <h1>Text to Speech</h1>
         </div>
-        <span className="status-chip"><span className="status-dot" />Ready</span>
+        <span className={`status-chip ${backendStatus}`}><span className="status-dot" />{backendStatus === 'checking' ? 'Checking backend' : backendStatus === 'online' ? 'Backend online' : 'Backend offline'}</span>
       </header>
 
       <main className="workspace">
@@ -166,7 +209,7 @@ function App() {
         </section>
       </main>
 
-      <footer className="app-footer">FastAPI connection will be added in the next integration stages.</footer>
+      <footer className="app-footer">API endpoint: {getApiBaseUrl()}</footer>
     </div>
   );
 }

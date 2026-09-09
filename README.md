@@ -90,6 +90,10 @@ Completed: language and voice selection now use supported voice metadata, filter
 
 Completed: REST communication is defined in `docs/api-communication.md`, and `frontend/src/api/client.js` provides shared helpers for health checks, voice loading, speech generation, configurable API URLs, and normalized network/HTTP errors. The frontend will connect these helpers to the UI on Day 7.
 
+## Day 7 Status
+
+Completed: the React UI now calls the shared API client for backend health, provider voices, and speech generation. It displays backend connectivity status, uses provider voices when available, keeps local development fallback voices, and reports network/API failures without breaking the workspace. FastAPI implementation begins on Day 8.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.

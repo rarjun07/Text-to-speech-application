@@ -20,7 +20,11 @@ button:disabled { cursor: not-allowed; opacity: 0.58; }
 h1, h2, h3, p { margin-top: 0; }
 h1 { margin-bottom: 0; font-size: 20px; letter-spacing: -0.02em; }
 .status-chip { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; padding: 7px 10px; border: 1px solid #d1ded3; border-radius: 999px; color: #42634d; background: #edf5ed; font-size: 12px; font-weight: 700; }
+.status-chip.offline { border-color: #ead2c9; color: #9a4936; background: #fff2ed; }
+.status-chip.checking { border-color: #dddcca; color: #746f43; background: #faf9e9; }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #3eaa63; }
+.status-chip.offline .status-dot { background: #c05b42; }
+.status-chip.checking .status-dot { background: #b6a73d; }
 .workspace { padding: 62px 0 48px; }
 .intro { max-width: 660px; margin-bottom: 30px; }
 .intro h2 { margin-bottom: 12px; font-size: clamp(30px, 5vw, 48px); line-height: 1.05; letter-spacing: -0.045em; }
