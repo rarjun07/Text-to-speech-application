@@ -36,10 +36,13 @@ textarea:focus, select:focus { border-color: #2b8551; box-shadow: 0 0 0 3px rgba
 textarea::placeholder { color: #9aa89e; }
 .text-meta { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; color: #78857c; font-size: 12px; }
 .count-warning { color: #b64a36; font-weight: 700; }
+.field-error { margin: 8px 0 0; color: #a33d2b; font-size: 12px; font-weight: 700; }
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
 .field { display: grid; gap: 8px; }
 .field label { color: #4d5d52; font-size: 13px; font-weight: 700; }
+.field-hint { color: #819087; font-size: 11px; }
 select { width: 100%; padding: 12px 13px; border: 1px solid #cbd7cd; border-radius: 6px; outline: none; color: #17211c; background: #fbfcfa; }
+select:disabled { color: #869289; background: #f1f4f1; }
 .primary-button { display: inline-flex; align-items: center; justify-content: space-between; width: 100%; min-height: 48px; padding: 0 16px; border: 0; border-radius: 6px; color: #fff; background: #1e5839; font-weight: 750; transition: background 160ms ease, transform 160ms ease; }
 .primary-button:hover:not(:disabled) { background: #16462d; transform: translateY(-1px); }
 .primary-button span { font-size: 18px; }

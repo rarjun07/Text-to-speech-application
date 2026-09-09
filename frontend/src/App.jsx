@@ -3,10 +3,10 @@ import { useMemo, useState } from 'react';
 const MAX_CHARACTERS = 5000;
 
 const voices = [
-  { id: 'en-female', name: 'English Female', language: 'en-US' },
-  { id: 'en-male', name: 'English Male', language: 'en-US' },
-  { id: 'hi-female', name: 'Hindi Female', language: 'hi-IN' },
-  { id: 'es-female', name: 'Spanish Female', language: 'es-ES' },
+  { id: 'en-female', name: 'Ava', language: 'en-US', gender: 'Female', style: 'Clear and warm' },
+  { id: 'en-male', name: 'Liam', language: 'en-US', gender: 'Male', style: 'Calm and steady' },
+  { id: 'hi-female', name: 'Ananya', language: 'hi-IN', gender: 'Female', style: 'Natural and expressive' },
+  { id: 'es-female', name: 'Sofia', language: 'es-ES', gender: 'Female', style: 'Bright and conversational' },
 ];
 
 const languages = [
@@ -15,6 +15,10 @@ const languages = [
   { id: 'es-ES', name: 'Spanish' },
 ];
 
+function voicesForLanguage(language) {
+  return voices.filter((item) => item.language === language);
+}
+
 function App() {
   const [text, setText] = useState('');
   const [language, setLanguage] = useState('en-US');
@@ -22,32 +26,33 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
+  const [hasAttemptedGenerate, setHasAttemptedGenerate] = useState(false);
 
-  const availableVoices = useMemo(
-    () => voices.filter((item) => item.language === language),
-    [language],
-  );
+  const availableVoices = useMemo(() => voicesForLanguage(language), [language]);
+  const selectedVoice = voices.find((item) => item.id === voice);
 
   const wordCount = text.trim() ? text.trim().split(/\s+/).length : 0;
   const characterCount = text.length;
   const isOverLimit = characterCount > MAX_CHARACTERS;
+  const textError = !text.trim()
+    ? 'Text is required.'
+    : isOverLimit
+      ? `Text must be ${MAX_CHARACTERS.toLocaleString()} characters or fewer.`
+      : '';
 
   function handleLanguageChange(event) {
     const nextLanguage = event.target.value;
-    const nextVoices = voices.filter((item) => item.language === nextLanguage);
+    const nextVoices = voicesForLanguage(nextLanguage);
     setLanguage(nextLanguage);
-    setVoice(nextVoices[0]?.id ?? '');
+    setVoice(nextVoices[0]?.id || '');
     setError('');
   }
 
   function handleGenerate(event) {
     event.preventDefault();
-    if (!text.trim()) {
-      setError('Enter some text before generating speech.');
-      return;
-    }
-    if (isOverLimit) {
-      setError(`Text must be ${MAX_CHARACTERS.toLocaleString()} characters or fewer.`);
+    setHasAttemptedGenerate(true);
+    if (textError) {
+      setError(textError === 'Text is required.' ? 'Enter some text before generating speech.' : textError);
       return;
     }
     if (!voice) {
@@ -64,6 +69,7 @@ function App() {
     setText('');
     setAudioUrl('');
     setError('');
+    setHasAttemptedGenerate(false);
   }
 
   return (
@@ -97,16 +103,20 @@ function App() {
             <textarea
               id="speech-text"
               value={text}
-              onChange={(event) => setText(event.target.value)}
+              onChange={(event) => {
+                setText(event.target.value);
+                setError('');
+              }}
               placeholder="Paste or write your text here..."
               maxLength={MAX_CHARACTERS + 500}
-              aria-describedby="text-meta text-error"
-              aria-invalid={isOverLimit || Boolean(error && !text.trim())}
+              aria-describedby="text-meta text-validation-error"
+              aria-invalid={Boolean(textError && hasAttemptedGenerate)}
             />
             <div className="text-meta" id="text-meta">
               <span>{wordCount} words</span>
               <span className={isOverLimit ? 'count-warning' : ''}>{characterCount.toLocaleString()} / {MAX_CHARACTERS.toLocaleString()} characters</span>
             </div>
+            {hasAttemptedGenerate && textError && <p className="field-error" id="text-validation-error">{textError}</p>}
           </section>
 
           <section className="panel settings-panel" aria-labelledby="settings-title">
@@ -119,15 +129,18 @@ function App() {
             <div className="settings-grid">
               <div className="field">
                 <label htmlFor="language">Language</label>
-                <select id="language" value={language} onChange={handleLanguageChange}>
+                <select id="language" value={language} onChange={handleLanguageChange} aria-describedby="language-hint">
                   {languages.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
                 </select>
+                <span className="field-hint" id="language-hint">{availableVoices.length} {availableVoices.length === 1 ? 'voice' : 'voices'} available</span>
               </div>
               <div className="field">
                 <label htmlFor="voice">Voice</label>
-                <select id="voice" value={voice} onChange={(event) => setVoice(event.target.value)}>
-                  {availableVoices.map((item) => <option value={item.id} key={item.id}>{item.name}</option>)}
+                <select id="voice" value={voice} onChange={(event) => setVoice(event.target.value)} disabled={!availableVoices.length} aria-describedby="voice-hint">
+                  {!availableVoices.length && <option value="">No voices available</option>}
+                  {availableVoices.map((item) => <option value={item.id} key={item.id}>{item.name} - {item.gender}</option>)}
                 </select>
+                <span className="field-hint" id="voice-hint">{selectedVoice ? `${selectedVoice.style} voice` : 'Choose a supported voice'}</span>
               </div>
             </div>
             <button className="primary-button" type="submit" disabled={isGenerating}>
@@ -137,7 +150,7 @@ function App() {
           </section>
 
           <div className="feedback-region" aria-live="polite">
-            {error && <p className="error-message" id="text-error" role="alert">{error}</p>}
+            {error && <p className="error-message" role="alert">{error}</p>}
           </div>
         </form>
 

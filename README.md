@@ -78,6 +78,14 @@ Completed: the UI structure, responsive behavior, component boundaries, accessib
 
 Completed: the React frontend shell is implemented in `frontend/`. It includes the designed workspace, text editor, character and word counts, language and voice controls, validation feedback, loading state, and an empty audio-result state. Backend communication is intentionally deferred to later days.
 
+## Day 4 Status
+
+Completed: text input validation now handles empty or whitespace-only text, the 5,000-character limit, live character and word counts, inline accessible errors, and consistent validation feedback before generation.
+
+## Day 5 Status
+
+Completed: language and voice selection now use supported voice metadata, filter voices by language, preserve a valid voice when the language changes, show availability and voice-style hints, and handle a language with no available voices.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.
