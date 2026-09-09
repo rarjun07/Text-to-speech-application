@@ -74,6 +74,10 @@ Completed: the mentor brief was reviewed page by page, the requirements were con
 
 Completed: the UI structure, responsive behavior, component boundaries, accessibility requirements, visual tokens, and interaction states are documented in `docs/ui-design.md`. Day 3 will implement the React frontend shell from this design.
 
+## Day 3 Status
+
+Completed: the React frontend shell is implemented in `frontend/`. It includes the designed workspace, text editor, character and word counts, language and voice controls, validation feedback, loading state, and an empty audio-result state. Backend communication is intentionally deferred to later days.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.
