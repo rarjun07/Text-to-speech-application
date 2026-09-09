@@ -86,6 +86,10 @@ Completed: text input validation now handles empty or whitespace-only text, the 
 
 Completed: language and voice selection now use supported voice metadata, filter voices by language, preserve a valid voice when the language changes, show availability and voice-style hints, and handle a language with no available voices.
 
+## Day 6 Status
+
+Completed: REST communication is defined in `docs/api-communication.md`, and `frontend/src/api/client.js` provides shared helpers for health checks, voice loading, speech generation, configurable API URLs, and normalized network/HTTP errors. The frontend will connect these helpers to the UI on Day 7.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.
