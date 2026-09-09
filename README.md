@@ -70,6 +70,10 @@ Each day will be completed, verified, committed, and pushed before starting the 
 
 Completed: the mentor brief was reviewed page by page, the requirements were consolidated, and the implementation scope and stack were selected. No application code is intentionally included in Day 1; the next commit will begin the UI design work for Day 2.
 
+## Day 2 Status
+
+Completed: the UI structure, responsive behavior, component boundaries, accessibility requirements, visual tokens, and interaction states are documented in `docs/ui-design.md`. Day 3 will implement the React frontend shell from this design.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.
@@ -77,4 +81,3 @@ Completed: the mentor brief was reviewed page by page, the requirements were con
 - Validate requests at the backend even when the frontend already validates them.
 - Use focused commits named by day, for example `Day 1: document project requirements`.
 - Run relevant checks before each commit and record any limitations in the README.
-
