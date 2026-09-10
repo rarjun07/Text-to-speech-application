@@ -94,6 +94,10 @@ Completed: REST communication is defined in `docs/api-communication.md`, and `fr
 
 Completed: the React UI now calls the shared API client for backend health, provider voices, and speech generation. It displays backend connectivity status, uses provider voices when available, keeps local development fallback voices, and reports network/API failures without breaking the workspace. FastAPI implementation begins on Day 8.
 
+## Day 8 Status
+
+Completed: the FastAPI backend foundation is implemented in `backend/`. It includes application setup, CORS configuration, environment settings, health and voices routes, Pydantic schemas, a voice catalog service, a TTS route placeholder, requirements, and backend setup documentation. The provider-backed `/api/tts` implementation begins on Day 9.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.
