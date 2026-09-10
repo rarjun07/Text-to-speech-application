@@ -54,6 +54,8 @@ Expected success response:
 }
 ```
 
+The current endpoint validates the request and selected voice. It returns `503 Service Unavailable` while the provider adapter is not configured; Day 10 will replace that response with generated audio.
+
 ## Error Handling
 
 The client converts network failures and non-2xx HTTP responses into `ApiError` instances. Each error preserves the HTTP status when available and exposes the backend detail for the UI to display. The UI will map validation, authentication, rate-limit, provider, and server failures to user-facing messages during the integration stages.
@@ -65,4 +67,3 @@ The client converts network failures and non-2xx HTTP responses into `ApiError` 
 - JSON request and response handling is centralized.
 - Network failures and non-2xx responses are normalized.
 - Health, voices, and speech-generation helpers match the mentor brief.
-
