@@ -1,6 +1,8 @@
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.schemas.tts import TTSResponse
+from app.services import tts_service
 
 
 client = TestClient(app)
@@ -35,3 +37,18 @@ def test_tts_reports_provider_unavailable() -> None:
     )
     assert response.status_code == 503
 
+
+def test_tts_returns_audio_url_when_provider_succeeds(monkeypatch) -> None:
+    def fake_synthesize(text: str, language: str, voice_id: str) -> TTSResponse:
+        assert text == "Hello"
+        assert language == "en-US"
+        assert voice_id == "en-female"
+        return TTSResponse(success=True, audio_url="/audio/example.mp3")
+
+    monkeypatch.setattr(tts_service, "synthesize_speech", fake_synthesize)
+    response = client.post(
+        "/api/tts",
+        json={"text": "Hello", "language": "en-US", "voice": "en-female"},
+    )
+    assert response.status_code == 200
+    assert response.json() == {"success": True, "audio_url": "/audio/example.mp3"}

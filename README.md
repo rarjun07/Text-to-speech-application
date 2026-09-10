@@ -114,6 +114,10 @@ Completed: successful speech generation now returns a stable `{ "success": true,
 
 Completed: the React result panel now loads generated audio through a native accessible audio player with play, pause, seeking, and volume controls. It tracks audio readiness and reports playback-load failures in the shared error region.
 
+## Day 13 Status
+
+Completed: generated audio can now be downloaded from the React result panel. The frontend fetches the backend audio URL as a blob, uses a stable `generated-speech.mp3` filename, shows download progress, and reports failed downloads through the shared error region.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.
