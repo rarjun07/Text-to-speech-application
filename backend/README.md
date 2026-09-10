@@ -30,3 +30,5 @@ Successful response:
 The `/audio` route serves generated files from the backend so the frontend can use the URL in a native audio player.
 
 Google Cloud Text-to-Speech credentials belong in a local `.env` file and must never be committed. The frontend never receives the provider key.
+
+Requests are limited by `RATE_LIMIT_PER_MINUTE` per client address. The default is 60 requests per minute and rate-limited requests return HTTP `429`.

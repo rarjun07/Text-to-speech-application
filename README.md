@@ -118,6 +118,10 @@ Completed: the React result panel now loads generated audio through a native acc
 
 Completed: generated audio can now be downloaded from the React result panel. The frontend fetches the backend audio URL as a blob, uses a stable `generated-speech.mp3` filename, shows download progress, and reports failed downloads through the shared error region.
 
+## Day 14 Status
+
+Completed: final backend validation tests, a lightweight per-client rate limit, deployment configuration guidance, environment-variable documentation, and the final verification checklist are in place. Deployment remains a hosting-account step requiring the project owner’s credentials.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.

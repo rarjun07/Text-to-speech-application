@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
+from app.middleware.rate_limit import RateLimitMiddleware
 from app.routers import health, tts, voices
 
 app = FastAPI(
@@ -20,6 +21,7 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+app.add_middleware(RateLimitMiddleware, limit=settings.rate_limit_per_minute)
 
 app.include_router(health.router, prefix="/api")
 app.include_router(voices.router, prefix="/api")

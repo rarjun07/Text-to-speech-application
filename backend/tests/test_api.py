@@ -22,6 +22,19 @@ def test_tts_rejects_whitespace_only_text() -> None:
     assert response.status_code == 422
 
 
+def test_tts_rejects_text_over_limit() -> None:
+    response = client.post(
+        "/api/tts",
+        json={"text": "a" * 5001, "language": "en-US", "voice": "en-female"},
+    )
+    assert response.status_code == 422
+
+
+def test_tts_rejects_missing_fields() -> None:
+    response = client.post("/api/tts", json={"text": "Hello"})
+    assert response.status_code == 422
+
+
 def test_tts_rejects_voice_for_wrong_language() -> None:
     response = client.post(
         "/api/tts",
