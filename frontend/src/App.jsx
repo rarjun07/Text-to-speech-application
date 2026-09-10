@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ApiError, generateSpeech, getApiBaseUrl, getHealth, getVoices } from './api/client';
+import { ApiError, downloadAudio, generateSpeech, getApiBaseUrl, getHealth, getVoices } from './api/client';
 
 const MAX_CHARACTERS = 5000;
 
@@ -27,6 +27,8 @@ function App() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState('');
   const [audioUrl, setAudioUrl] = useState('');
+  const [audioReady, setAudioReady] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const [hasAttemptedGenerate, setHasAttemptedGenerate] = useState(false);
   const [providerVoices, setProviderVoices] = useState(voices);
   const [backendStatus, setBackendStatus] = useState('checking');
@@ -99,6 +101,7 @@ function App() {
     try {
       const result = await generateSpeech({ text: text.trim(), language, voice });
       if (!result?.audio_url) throw new ApiError('The backend returned no audio URL.');
+      setAudioReady(false);
       setAudioUrl(result.audio_url.startsWith('http') ? result.audio_url : `${getApiBaseUrl()}${result.audio_url}`);
     } catch (requestError) {
       setAudioUrl('');
@@ -108,9 +111,23 @@ function App() {
     }
   }
 
+  async function handleDownload() {
+    if (!audioUrl || isDownloading) return;
+    setError('');
+    setIsDownloading(true);
+    try {
+      await downloadAudio(audioUrl);
+    } catch (requestError) {
+      setError(requestError instanceof ApiError ? requestError.message : 'The generated audio could not be downloaded.');
+    } finally {
+      setIsDownloading(false);
+    }
+  }
+
   function handleClear() {
     setText('');
     setAudioUrl('');
+    setAudioReady(false);
     setError('');
     setHasAttemptedGenerate(false);
   }
@@ -203,9 +220,29 @@ function App() {
               <p className="section-kicker">03 / Result</p>
               <h3 id="result-title">Generated audio</h3>
             </div>
-            <span className="result-state">{audioUrl ? 'Ready to play' : 'Waiting for a script'}</span>
+            <span className="result-state">{audioUrl ? (audioReady ? 'Ready to play' : 'Loading audio') : 'Waiting for a script'}</span>
           </div>
-          {audioUrl ? <audio controls src={audioUrl}>Your browser does not support audio playback.</audio> : <div className="empty-result"><span className="waveform" aria-hidden="true">||||||||||||||||||||</span><p>Your generated audio will appear here.</p></div>}
+          {audioUrl ? (
+            <div className="audio-player">
+              <audio
+                controls
+                preload="metadata"
+                src={audioUrl}
+                onCanPlay={() => setAudioReady(true)}
+                onError={() => {
+                  setAudioReady(false);
+                  setError('The generated audio could not be loaded.');
+                }}
+                aria-label="Generated speech audio"
+              >
+                Your browser does not support audio playback.
+              </audio>
+              <button className="download-button" type="button" onClick={handleDownload} disabled={!audioReady || isDownloading}>
+                {isDownloading ? 'Preparing download...' : 'Download Audio'}
+                <span aria-hidden="true">-&gt;</span>
+              </button>
+            </div>
+          ) : <div className="empty-result"><span className="waveform" aria-hidden="true">||||||||||||||||||||</span><p>Your generated audio will appear here.</p></div>}
         </section>
       </main>
 

@@ -58,6 +58,9 @@ select:disabled { color: #869289; background: #f1f4f1; }
 .empty-result p { margin: 12px 0 0; font-size: 13px; }
 .waveform { color: #b9c9bd; font-size: 24px; letter-spacing: 4px; }
 audio { width: 100%; }
+.audio-player { display: grid; gap: 10px; }
+.download-button { display: inline-flex; align-items: center; justify-content: space-between; min-height: 44px; padding: 0 14px; border: 1px solid #b8c9bb; border-radius: 6px; color: #214a31; background: #f6faf6; font-size: 13px; font-weight: 750; }
+.download-button:hover:not(:disabled) { border-color: #2b8551; background: #edf6ee; }
 .app-footer { padding: 0 0 32px; color: #8a978e; font-size: 12px; text-align: center; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
