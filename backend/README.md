@@ -16,7 +16,6 @@ Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
 
 - `GET /api/health` returns the backend status.
 - `GET /api/voices` returns the current voice catalog.
-- `POST /api/tts` is reserved for the provider integration on Day 9 and Day 10.
+- `POST /api/tts` validates the request and voice compatibility. It returns `503` until a provider is configured on Day 10.
 
 Provider credentials belong in a local `.env` file and must never be committed.
-

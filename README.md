@@ -98,6 +98,10 @@ Completed: the React UI now calls the shared API client for backend health, prov
 
 Completed: the FastAPI backend foundation is implemented in `backend/`. It includes application setup, CORS configuration, environment settings, health and voices routes, Pydantic schemas, a voice catalog service, a TTS route placeholder, requirements, and backend setup documentation. The provider-backed `/api/tts` implementation begins on Day 9.
 
+## Day 9 Status
+
+Completed: `POST /api/tts` now validates non-whitespace text, maximum length, language, and voice compatibility. It returns structured responses and appropriate `422`, `404`, and `503` errors. The TTS provider adapter remains intentionally unavailable until Day 10.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.
