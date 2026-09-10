@@ -57,3 +57,25 @@ export function generateSpeech({ text, language, voice }) {
   });
 }
 
+export async function downloadAudio(audioUrl) {
+  let response;
+  try {
+    response = await fetch(audioUrl);
+  } catch (error) {
+    throw new ApiError('The generated audio could not be downloaded.', 0, error);
+  }
+
+  if (!response.ok) {
+    throw new ApiError(`Audio download failed with status ${response.status}.`, response.status);
+  }
+
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = objectUrl;
+  link.download = 'generated-speech.mp3';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(objectUrl);
+}
