@@ -16,6 +16,11 @@ class Settings:
     app_name: str = os.getenv("APP_NAME", "Text-to-Speech API")
     cors_origins: list[str] = None
     max_text_length: int = int(os.getenv("MAX_TEXT_LENGTH", "5000"))
+    tts_api_key: str = os.getenv("TTS_API_KEY", "")
+    tts_endpoint: str = os.getenv(
+        "TTS_ENDPOINT",
+        "https://texttospeech.googleapis.com/v1/text:synthesize",
+    )
 
     def __post_init__(self):
         if self.cors_origins is None:
@@ -23,4 +28,3 @@ class Settings:
 
 
 settings = Settings()
-

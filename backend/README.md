@@ -16,6 +16,17 @@ Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
 
 - `GET /api/health` returns the backend status.
 - `GET /api/voices` returns the current voice catalog.
-- `POST /api/tts` validates the request and voice compatibility. It returns `503` until a provider is configured on Day 10.
+- `POST /api/tts` validates the request, calls Google Cloud Text-to-Speech when `TTS_API_KEY` is configured, saves the returned MP3 under `generated_audio/`, and returns its `/audio/...` URL.
 
-Provider credentials belong in a local `.env` file and must never be committed.
+Successful response:
+
+```json
+{
+  "success": true,
+  "audio_url": "/audio/36f2...mp3"
+}
+```
+
+The `/audio` route serves generated files from the backend so the frontend can use the URL in a native audio player.
+
+Google Cloud Text-to-Speech credentials belong in a local `.env` file and must never be committed. The frontend never receives the provider key.

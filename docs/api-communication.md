@@ -54,7 +54,9 @@ Expected success response:
 }
 ```
 
-The current endpoint validates the request and selected voice. It returns `503 Service Unavailable` while the provider adapter is not configured; Day 10 will replace that response with generated audio.
+The endpoint validates the request and selected voice. It returns `503 Service Unavailable` when Google Cloud Text-to-Speech is not configured or unavailable. When configured, it returns an MP3 URL served by the backend.
+
+The frontend should resolve a relative `audio_url` against the API base URL before assigning it to an audio element. Provider credentials are never included in this response.
 
 ## Error Handling
 

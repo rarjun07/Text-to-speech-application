@@ -102,6 +102,18 @@ Completed: the FastAPI backend foundation is implemented in `backend/`. It inclu
 
 Completed: `POST /api/tts` now validates non-whitespace text, maximum length, language, and voice compatibility. It returns structured responses and appropriate `422`, `404`, and `503` errors. The TTS provider adapter remains intentionally unavailable until Day 10.
 
+## Day 10 Status
+
+Completed: Google Cloud Text-to-Speech REST integration is implemented behind `backend/app/services/google_tts.py`. Provider credentials remain backend-only, voice IDs map to Google voice names, generated MP3 files receive random filenames, and audio is served through the backend `/audio` route. Without `TTS_API_KEY`, the API returns a controlled `503` response.
+
+## Day 11 Status
+
+Completed: successful speech generation now returns a stable `{ "success": true, "audio_url": "/audio/..." }` response, the backend serves generated audio through the `/audio` route, and the success contract is covered by a provider-mocked API test.
+
+## Day 12 Status
+
+Completed: the React result panel now loads generated audio through a native accessible audio player with play, pause, seeking, and volume controls. It tracks audio readiness and reports playback-load failures in the shared error region.
+
 ## Development Rules
 
 - Never commit `.env` files or provider credentials.

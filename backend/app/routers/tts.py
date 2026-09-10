@@ -1,11 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 
 from app.schemas.tts import TTSRequest, TTSResponse
-from app.services.tts_service import (
-    TTSProviderUnavailable,
-    VoiceNotFound,
-    generate_speech,
-)
+from app.services.exceptions import TTSProviderUnavailable, VoiceNotFound
+from app.services.tts_service import generate_speech
 
 router = APIRouter(tags=["text-to-speech"])
 

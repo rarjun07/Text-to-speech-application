@@ -1,5 +1,8 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
 from app.routers import health, tts, voices
@@ -22,3 +25,6 @@ app.include_router(health.router, prefix="/api")
 app.include_router(voices.router, prefix="/api")
 app.include_router(tts.router, prefix="/api")
 
+audio_directory = Path(__file__).resolve().parents[1] / "generated_audio"
+audio_directory.mkdir(exist_ok=True)
+app.mount("/audio", StaticFiles(directory=audio_directory), name="audio")
