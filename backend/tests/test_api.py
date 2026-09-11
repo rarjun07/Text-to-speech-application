@@ -2,7 +2,8 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 from app.schemas.tts import TTSResponse
-from app.services import tts_service
+from app.services import local_tts
+from app.services.exceptions import TTSProviderUnavailable
 
 
 client = TestClient(app)
@@ -43,7 +44,11 @@ def test_tts_rejects_voice_for_wrong_language() -> None:
     assert response.status_code == 404
 
 
-def test_tts_reports_provider_unavailable() -> None:
+def test_tts_reports_provider_unavailable(monkeypatch) -> None:
+    def fake_synthesize(text: str, language: str, voice_id: str) -> TTSResponse:
+        raise TTSProviderUnavailable("local engine unavailable")
+
+    monkeypatch.setattr(local_tts, "synthesize_speech", fake_synthesize)
     response = client.post(
         "/api/tts",
         json={"text": "Hello", "language": "en-US", "voice": "en-female"},
@@ -58,7 +63,7 @@ def test_tts_returns_audio_url_when_provider_succeeds(monkeypatch) -> None:
         assert voice_id == "en-female"
         return TTSResponse(success=True, audio_url="/audio/example.mp3")
 
-    monkeypatch.setattr(tts_service, "synthesize_speech", fake_synthesize)
+    monkeypatch.setattr(local_tts, "synthesize_speech", fake_synthesize)
     response = client.post(
         "/api/tts",
         json={"text": "Hello", "language": "en-US", "voice": "en-female"},

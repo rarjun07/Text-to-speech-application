@@ -16,7 +16,7 @@ Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
 
 - `GET /api/health` returns the backend status.
 - `GET /api/voices` returns the current voice catalog.
-- `POST /api/tts` validates the request, calls Google Cloud Text-to-Speech when `TTS_API_KEY` is configured, saves the returned MP3 under `generated_audio/`, and returns its `/audio/...` URL.
+- `POST /api/tts` validates the request, uses the local macOS `say` engine by default, saves a WAV file under `generated_audio/`, and returns its `/audio/...` URL.
 
 Successful response:
 
@@ -29,6 +29,6 @@ Successful response:
 
 The `/audio` route serves generated files from the backend so the frontend can use the URL in a native audio player.
 
-Google Cloud Text-to-Speech credentials belong in a local `.env` file and must never be committed. The frontend never receives the provider key.
+The default local provider needs no API key or billing account. To use Google Cloud instead, set `TTS_PROVIDER=google` and configure `TTS_API_KEY` in the local `.env` file. The frontend never receives the provider key.
 
 Requests are limited by `RATE_LIMIT_PER_MINUTE` per client address. The default is 60 requests per minute and rate-limited requests return HTTP `429`.

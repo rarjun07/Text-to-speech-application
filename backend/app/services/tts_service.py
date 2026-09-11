@@ -1,7 +1,8 @@
 from app.schemas.tts import TTSRequest, TTSResponse
-from app.services.google_tts import synthesize_speech
+from app.config import settings
 from app.services.exceptions import TTSProviderUnavailable, VoiceNotFound
 from app.services.voice_catalog import get_voice_catalog
+from app.services import google_tts, local_tts
 
 
 def _validate_voice(request: TTSRequest):
@@ -16,4 +17,8 @@ def _validate_voice(request: TTSRequest):
 
 def generate_speech(request: TTSRequest) -> TTSResponse:
     selected_voice = _validate_voice(request)
-    return synthesize_speech(request.text, request.language, selected_voice.id)
+    if settings.tts_provider == "google":
+        return google_tts.synthesize_speech(request.text, request.language, selected_voice.id)
+    if settings.tts_provider == "local":
+        return local_tts.synthesize_speech(request.text, request.language, selected_voice.id)
+    raise TTSProviderUnavailable(f"Unsupported TTS provider: {settings.tts_provider}")

@@ -104,7 +104,7 @@ Completed: `POST /api/tts` now validates non-whitespace text, maximum length, la
 
 ## Day 10 Status
 
-Completed: Google Cloud Text-to-Speech REST integration is implemented behind `backend/app/services/google_tts.py`. Provider credentials remain backend-only, voice IDs map to Google voice names, generated MP3 files receive random filenames, and audio is served through the backend `/audio` route. Without `TTS_API_KEY`, the API returns a controlled `503` response.
+Completed: the backend supports a no-billing local macOS TTS provider by default through `say` and `afconvert`. Generated WAV files receive random filenames and are served through the backend `/audio` route. Google Cloud remains an optional provider when `TTS_PROVIDER=google` and `TTS_API_KEY` are configured.
 
 ## Day 11 Status
 

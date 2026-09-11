@@ -54,7 +54,7 @@ Expected success response:
 }
 ```
 
-The endpoint validates the request and selected voice. It returns `503 Service Unavailable` when Google Cloud Text-to-Speech is not configured or unavailable. When configured, it returns an MP3 URL served by the backend.
+The endpoint validates the request and selected voice. Development uses the local macOS TTS provider by default and returns a WAV URL served by the backend. It returns `503 Service Unavailable` only when the selected provider cannot generate audio. Google Cloud remains optional.
 
 The frontend should resolve a relative `audio_url` against the API base URL before assigning it to an audio element. Provider credentials are never included in this response.
 

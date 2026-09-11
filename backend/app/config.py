@@ -17,6 +17,7 @@ class Settings:
     cors_origins: list[str] = None
     max_text_length: int = int(os.getenv("MAX_TEXT_LENGTH", "5000"))
     rate_limit_per_minute: int = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
+    tts_provider: str = os.getenv("TTS_PROVIDER", "local").lower()
     tts_api_key: str = os.getenv("TTS_API_KEY", "")
     tts_endpoint: str = os.getenv(
         "TTS_ENDPOINT",
