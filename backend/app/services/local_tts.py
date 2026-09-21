@@ -8,15 +8,15 @@ from app.services.exceptions import TTSProviderUnavailable
 
 VOICE_NAMES = {
     "en-female": "Samantha",
-    "en-male": "Alex",
+    "en-male": "Fred",
     "hi-female": "Lekha",
-    "es-female": "Monica",
+    "es-female": "Eddy (Spanish (Spain))",
 }
 
 
-def synthesize_speech(text: str, language: str, voice_id: str) -> TTSResponse:
+def synthesize_speech(text: str, language: str, voice_id: str, speaking_rate: float = 1.0) -> TTSResponse:
     del language
-    audio_directory = Path(__file__).resolve().parents[1] / "generated_audio"
+    audio_directory = Path(__file__).resolve().parents[2] / "generated_audio"
     audio_directory.mkdir(exist_ok=True)
     filename = f"{uuid.uuid4().hex}.wav"
     output_path = audio_directory / filename
@@ -25,7 +25,7 @@ def synthesize_speech(text: str, language: str, voice_id: str) -> TTSResponse:
 
     try:
         subprocess.run(
-            ["say", "-v", voice_name, "-o", str(source_path), text],
+            ["say", "-v", voice_name, "-r", str(round(200 * speaking_rate)), "-o", str(source_path), text],
             check=True,
             capture_output=True,
             text=True,

@@ -6,9 +6,9 @@ Full-stack internship project based on the mentor-provided project brief.
 
 - Frontend: React.js, JavaScript, HTML5, CSS3, and Tailwind CSS where useful
 - Backend: Python FastAPI
-- Database: PostgreSQL
+- Database: SQLite for local development and small deployments
 - API style: REST
-- Text-to-speech provider: to be selected during backend integration
+- Text-to-speech provider: local macOS speech engine, with optional Google Cloud support
 
 ## Product Goal
 
@@ -16,11 +16,15 @@ Users can enter text, choose a supported language and voice, generate natural-so
 
 ## Scope Decision
 
-The mentor brief defines three implementation levels. This project will use the intermediate path as the target because it includes the requested PostgreSQL database:
+This implementation now covers the mentor brief's Level 2 workflow:
 
-- Level 1 checkpoint: text input, language and voice selection, speech generation, and audio playback.
-- Level 2 target: Level 1 plus PostgreSQL-backed speech history, authentication, downloads, favorites, and multiple voices.
-- Level 3 features such as AI enhancement, document upload, cloud audio storage, analytics, and an admin dashboard are deferred until the core project is stable.
+- Level 1 speech creation, validation, playback, and download
+- Account registration and login with signed bearer tokens
+- Persistent speech history and favorites in SQLite
+- Voice library and audio output views in the frontend
+- Local macOS TTS for development and optional Google Cloud TTS for deployment
+
+Level 3 features such as AI enhancement, document upload, cloud audio storage, analytics, and an admin dashboard remain outside this submission. PostgreSQL can replace SQLite for a multi-instance deployment by migrating the persistence layer.
 
 ## Core API Contract
 
@@ -29,6 +33,10 @@ The backend will expose the following endpoints, following the mentor brief:
 - `POST /api/tts` - validate text, language, and voice; generate speech; return audio information.
 - `GET /api/voices` - return available voices grouped or filterable by language.
 - `GET /api/health` - return `{ "status": "ok" }` when the backend is available.
+- `POST /api/auth/register` and `POST /api/auth/login` - create and authenticate an account.
+- `GET /api/history` - return the authenticated user's generated speech history.
+- `GET /api/favorites` - return the authenticated user's favorite speeches.
+- `POST/DELETE /api/history/{id}/favorite` - manage a favorite.
 
 The backend will use appropriate HTTP status codes for validation failures, authentication failures, missing resources, rate limits, internal failures, and unavailable TTS providers.
 
@@ -42,7 +50,7 @@ The application must provide:
 - Browser audio playback with play/pause, seeking, and volume control.
 - Audio download when a generated result is available.
 - Clear handling for empty or oversized text, invalid selections, API-key failures, network failures, server errors, and unavailable providers.
-- Correct CORS configuration, backend-only provider credentials, rate limiting, and temporary audio storage unless persistence is required.
+- Correct CORS configuration, backend-only provider credentials, rate limiting, authenticated history, and temporary audio storage unless persistence is required.
 - Responsive UI and API documentation through FastAPI's generated docs.
 
 ## 14-Day Working Schedule
@@ -121,6 +129,17 @@ Completed: generated audio can now be downloaded from the React result panel. Th
 ## Day 14 Status
 
 Completed: final backend validation tests, a lightweight per-client rate limit, deployment configuration guidance, environment-variable documentation, and the final verification checklist are in place. Deployment remains a hosting-account step requiring the project owner’s credentials.
+
+## Submission Readiness
+
+The Level 2 workflow is implemented and verified locally. The backend test suite passes, the Python modules compile successfully, and the frontend production build succeeds.
+
+Remaining submission tasks that require the project owner’s access or presentation materials:
+
+- Import and run the Postman collection in `docs/postman-collection.json`.
+- Capture UI screenshots showing the empty, validation, generated-audio, and download states.
+- Deploy the frontend and backend if a public deployment URL is required.
+- Configure `TTS_PROVIDER=google` and a production provider key before deploying outside macOS.
 
 ## Development Rules
 

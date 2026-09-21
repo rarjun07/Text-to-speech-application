@@ -18,7 +18,14 @@ def _validate_voice(request: TTSRequest):
 def generate_speech(request: TTSRequest) -> TTSResponse:
     selected_voice = _validate_voice(request)
     if settings.tts_provider == "google":
-        return google_tts.synthesize_speech(request.text, request.language, selected_voice.id)
+        return google_tts.synthesize_speech(
+            request.text,
+            request.language,
+            selected_voice.id,
+            request.speaking_rate,
+            request.pitch,
+            request.volume_gain_db,
+        )
     if settings.tts_provider == "local":
-        return local_tts.synthesize_speech(request.text, request.language, selected_voice.id)
+        return local_tts.synthesize_speech(request.text, request.language, selected_voice.id, request.speaking_rate)
     raise TTSProviderUnavailable(f"Unsupported TTS provider: {settings.tts_provider}")

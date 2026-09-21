@@ -23,6 +23,9 @@ class Settings:
         "TTS_ENDPOINT",
         "https://texttospeech.googleapis.com/v1/text:synthesize",
     )
+    database_path: str = os.getenv("DATABASE_PATH", "app/data/tts.db")
+    auth_secret: str = os.getenv("AUTH_SECRET", "change-this-development-secret")
+    auth_token_minutes: int = int(os.getenv("AUTH_TOKEN_MINUTES", "1440"))
 
     def __post_init__(self):
         if self.cors_origins is None:

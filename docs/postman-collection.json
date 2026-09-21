@@ -1,0 +1,48 @@
+{
+  "info": {
+    "name": "Text-to-Speech API",
+    "description": "Basic API checks for the mentor project submission.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/health"
+      }
+    },
+    {
+      "name": "List voices",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/voices"
+      }
+    },
+    {
+      "name": "Generate speech",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"text\": \"Welcome to the Text-to-Speech application.\",\n  \"language\": \"en-US\",\n  \"voice\": \"en-female\"\n}"
+        },
+        "url": "{{baseUrl}}/api/tts"
+      }
+    }
+  ]
+}

@@ -12,7 +12,9 @@ coverage/
 .pytest_cache/
 .DS_Store
 generated_audio/
+profile_images/
 *.mp3
 *.wav
 *.ogg
+*.db
 

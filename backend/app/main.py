@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
 from app.middleware.rate_limit import RateLimitMiddleware
-from app.routers import health, tts, voices
+from app.routers import auth, documents, health, history, tts, voices
 
 app = FastAPI(
     title="Text-to-Speech API",
@@ -17,6 +17,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$",
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
@@ -26,7 +27,13 @@ app.add_middleware(RateLimitMiddleware, limit=settings.rate_limit_per_minute)
 app.include_router(health.router, prefix="/api")
 app.include_router(voices.router, prefix="/api")
 app.include_router(tts.router, prefix="/api")
+app.include_router(auth.router, prefix="/api")
+app.include_router(history.router, prefix="/api")
+app.include_router(documents.router, prefix="/api")
 
 audio_directory = Path(__file__).resolve().parents[1] / "generated_audio"
 audio_directory.mkdir(exist_ok=True)
 app.mount("/audio", StaticFiles(directory=audio_directory), name="audio")
+profile_image_directory = Path(__file__).resolve().parents[1] / "profile_images"
+profile_image_directory.mkdir(exist_ok=True)
+app.mount("/profile-images", StaticFiles(directory=profile_image_directory), name="profile-images")

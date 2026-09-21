@@ -18,7 +18,14 @@ GOOGLE_VOICE_NAMES = {
 }
 
 
-def synthesize_speech(text: str, language: str, voice_id: str) -> TTSResponse:
+def synthesize_speech(
+    text: str,
+    language: str,
+    voice_id: str,
+    speaking_rate: float = 1.0,
+    pitch: float = 0.0,
+    volume_gain_db: float = 0.0,
+) -> TTSResponse:
     if not settings.tts_api_key:
         raise TTSProviderUnavailable("The Google Cloud TTS provider is not configured yet.")
 
@@ -29,7 +36,12 @@ def synthesize_speech(text: str, language: str, voice_id: str) -> TTSResponse:
     payload = json.dumps({
         "input": {"text": text},
         "voice": {"languageCode": language, "name": provider_voice},
-        "audioConfig": {"audioEncoding": "MP3"},
+        "audioConfig": {
+            "audioEncoding": "MP3",
+            "speakingRate": speaking_rate,
+            "pitch": pitch,
+            "volumeGainDb": volume_gain_db,
+        },
     }).encode("utf-8")
     endpoint = f"{settings.tts_endpoint}?{urlencode({'key': settings.tts_api_key})}"
     request = Request(
@@ -54,7 +66,7 @@ def synthesize_speech(text: str, language: str, voice_id: str) -> TTSResponse:
     except (ValueError, base64.binascii.Error) as error:
         raise TTSProviderUnavailable("The TTS provider returned invalid audio data.") from error
 
-    audio_directory = Path(__file__).resolve().parents[1] / "generated_audio"
+    audio_directory = Path(__file__).resolve().parents[2] / "generated_audio"
     audio_directory.mkdir(exist_ok=True)
     filename = f"{uuid.uuid4().hex}.mp3"
     (audio_directory / filename).write_bytes(audio_bytes)

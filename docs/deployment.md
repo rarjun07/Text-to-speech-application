@@ -41,9 +41,13 @@ MAX_TEXT_LENGTH=5000
 RATE_LIMIT_PER_MINUTE=60
 TTS_API_KEY=your_provider_key
 TTS_ENDPOINT=https://texttospeech.googleapis.com/v1/text:synthesize
+TTS_PROVIDER=google
+DATABASE_PATH=/var/data/tts.db
+AUTH_SECRET=replace-with-a-long-random-secret
+AUTH_TOKEN_MINUTES=1440
 ```
 
-Never commit `.env` or provider credentials. The generated audio directory is suitable for development and short-lived demos; production deployments should use object storage if audio needs to survive restarts or multiple instances.
+Never commit `.env` or provider credentials. The local `say` provider is macOS-only; production hosting should use `TTS_PROVIDER=google` or another cloud adapter. SQLite needs a persistent disk such as `/var/data/tts.db`; PostgreSQL is recommended when running multiple backend instances. The generated audio directory also needs persistent storage or object storage if history links must survive restarts.
 
 ## Final Verification
 
@@ -63,4 +67,5 @@ Before deployment, verify:
 - The provider key is configured only in the backend.
 - `/api/health` returns `{ "status": "ok" }`.
 - `/docs` is reachable for API review.
+- Account registration, login, history, and favorites work with the deployed database.
 - Generated audio playback and download work in the deployed environment.
